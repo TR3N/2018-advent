@@ -1,33 +1,21 @@
-#!/bin/bash
+#!/usr/local/Cellar/bash/4.4.23/bin/bash
 # TR3N
-#
 
-frequency=0
-xfrequency=0
-file=input
-catch=false
-count=0
+file=$(<input)
+freq=0
+declare -A JAWN
+JAWN[$freq]=0
 
-main () {
-for value in $(cat $file)
-  do
-  frequency=$(( frequency + value ))
-  for x in $(echo $xfrequency)
-    do
-    if [ "$frequency" == "$x" ]; then
-      echo "$frequency - $x"
-      exit
+while true; do
+  while read -r x; do
+    freq=$(($freq+$x))
+
+    if [[ ${JAWN[$freq]} ]]; then
+      echo "Got it : $freq"
+      echo -e "\a"
+      break 2
     fi
-    done
-    xfrequency=$(echo "$xfrequency $frequency")
-    count=$((count+1))
-    echo $count
-  done
-}
-while [ $catch == "false" ];
-  do
-  main
-  echo "-----------------"
-  done
 
-
+    JAWN[$freq]="$x"
+  done <<< "$file"
+done
